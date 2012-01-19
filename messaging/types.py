@@ -12,12 +12,12 @@ class pgTypeWithDefault(pgType):
 
 class pgString(pgTypeWithDefault):
     def __init__(self, defaultValue=""):
-        pgTypeWithDefault.__init__(self)
+        pgTypeWithDefault.__init__(self, defaultValue)
 
 
 class pgNumber(pgTypeWithDefault):
     def __init__(self, defaultValue=0, signed=True):
-        pgTypeWithDefault.__init__(self )
+        pgTypeWithDefault.__init__(self, defaultValue )
         self._signed = signed
 
     def is_signed(self):

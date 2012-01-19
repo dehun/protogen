@@ -1,5 +1,6 @@
-from protogen.messaging.message import pgMessage
 from protogen.messaging.types import *
+from protogen.messaging.message import pgMessage
+
 
 class SimpleOne(pgMessage):
     title = pgString("hello world")
