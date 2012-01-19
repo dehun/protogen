@@ -11,6 +11,7 @@ from messaging.message_loader import MessageLoader
 from generators.generator_factory import GeneratorFactory
 import pprint
 
+sys.path.append('..')
 
 class Config:
     verbose = False
