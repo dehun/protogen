@@ -1,10 +1,11 @@
 from types import pgType
 
 class pgMessage(pgType):
-    def Serialize(self, stream):
-        raise NotImplementedError()
+    pass
+    # def serialize(self, bytes):
+    #     raise NotImplementedError()
 
-    @staticmethod
-    def Deserialize(self, stream):
-        raise NotImpelemtedError()
+    # @staticmethod
+    # def _deserialize(self, bytes):
+    #     raise NotImpelemtedError()
         
