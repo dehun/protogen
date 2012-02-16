@@ -4,14 +4,18 @@
 ##     protogen.py --lang=python --format=json --output=./ [--verbose] protocol.py
 ##
 
-import getopt
 import sys
+sys.path.append('..')
+sys.path.append('/home/dehun/dev/home/')
+
+
+import getopt
+
 import string
 from messaging.message_loader import MessageLoader
 from generators.generator_factory import GeneratorFactory
 import pprint
 
-sys.path.append('..')
 
 class Config:
     verbose = False
@@ -19,7 +23,7 @@ class Config:
         pass
         
     def check_completness(self):
-        
+		# TODO : implement me
         return True
 
         
@@ -64,8 +68,7 @@ def main():
 
     # generate to output
     pgenerator.generate(messages, conf.output)
-    
+
 
 if __name__ == '__main__':
     main()
-

@@ -1,4 +1,18 @@
 from python.python_json_generator import PythonJsonGenerator
+
+class PythonBinaryGenerator:
+	pass
+
+class CppJsonGenerator:
+	pass
+
+class CppBinaryGenerator:
+	pass
+
+class AS3JsonGenerator:
+	pass
+class AS3BinaryGenerator:
+	pass
     
 class GeneratorFactory:
     def __init__(self):
