@@ -12,13 +12,15 @@ sys.path.append('/home/dehun/dev/home/')
 import getopt
 
 import string
-from messaging.message_loader import MessageLoader
-from generators.generator_factory import GeneratorFactory
+from protogen.messaging.message_loader import MessageLoader
+from protogen.generators.generator_factory import GeneratorFactory
+from protogen import logger
 import pprint
 
 
 class Config:
     verbose = False
+	debug = False
     def check_and_die(self, arg):
         pass
         
@@ -37,6 +39,7 @@ def parse_params():
     optReactor = {('--lang=', '-l:') : lambda arg: setattr(conf, 'lang',arg),
                   ('--format=', '-f:') : lambda arg: setattr(conf, 'format', arg),
                   ('--verbose', '-v') : lambda arg: setattr(conf, 'verbose', True),
+				  ('--debug', '-d') : lambda arg: setattr(conf, 'debug', True),
                   ('--output=', '-o:') : lambda arg: setattr(conf, 'output', arg),
                   ('--proto=', '-p:') : lambda arg: setattr(conf, 'proto', arg),
                   ('--help', '-h') : lambda arg: usage_and_die()}
@@ -55,19 +58,27 @@ def parse_params():
 
     return conf
 
-
 def main():
+	logger.info("starting up protogen")
     # parse input params
-    conf = parse_params()
+	conf = parse_params()
+	# setup logger
+	if (conf.verbose):
+		logger.verbose = True
+	if (conf.debug):
+		logger.debug = True
     # create directory
     # load all the messages
-    messages = MessageLoader(conf.proto).get_all()
+	logger.info("loading messages from path \"" + conf.proto + "\"")
+	messages = MessageLoader(conf.proto).get_all()
 
     # get generator
-    pgenerator = GeneratorFactory().get_generator(conf.lang, conf.format)
+	logger.info("preparing generator")
+	pgenerator = GeneratorFactory().get_generator(conf.lang, conf.format)
 
     # generate to output
-    pgenerator.generate(messages, conf.output)
+	logger.info("start generation")
+	pgenerator.generate(messages, conf.output)
 
 
 if __name__ == '__main__':

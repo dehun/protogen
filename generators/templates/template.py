@@ -29,7 +29,8 @@ class Template:
 		for child in self._childs_before:
 			code = code + child.generate()
 		#push ourself code
-		code = code + body_code
+		if body_code:
+			code = code + body_code
 		# generate after code
 		for child in self._childs_after:
 			code = code + child.generate()
