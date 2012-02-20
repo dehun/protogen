@@ -1,19 +1,19 @@
-verbose = False
-debug = False
+fverbose = True
+fdebug = False
 
 def debug(str):
-	if (debug):
-		print str + "\n"
+	if (fdebug):
+		print str
 
 def verbose(str):
-	if (verbose):
-		print str + "\n"
+	if (fverbose):
+		print str
 
 def info(str):
-	print str + "\n"
+	print str
 
 def warn(str):
-	print str + "\n"
+	print str
 
 def error(str):
-	print str + "\n"
+	print str
