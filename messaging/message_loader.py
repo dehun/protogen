@@ -1,7 +1,7 @@
 import imp
 import re
 from inspect import isclass
-from message import pgMessage
+from types import pgMessage, is_native
 from protogen import logger
 
 class MessageLoader:
@@ -18,10 +18,11 @@ class MessageLoader:
         return instance
 
     def _load_all_messages(self, mod):
-        return filter(lambda msg: pgMessage is not msg, \
-                      [self._load_message(mod.__dict__[key]) for key in \
-                       filter(lambda k: isclass(mod.__dict__[k]) and issubclass(mod.__dict__[k], pgMessage), \
-                              mod.__dict__.keys())])
+        def is_message(msg):
+            return isclass(msg) and issubclass(msg, pgMessage) and not is_native(msg)
+
+        return [self._load_message(mod.__dict__[key]) for key in \
+                       filter(lambda k:is_message(mod.__dict__[k]) , mod.__dict__.keys())]
         
     def get_all(self):
         mod = self._load_mod()

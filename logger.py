@@ -1,5 +1,5 @@
 fverbose = True
-fdebug = False
+fdebug = True
 
 def debug(str):
 	if (fdebug):

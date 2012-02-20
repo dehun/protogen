@@ -11,14 +11,14 @@ class TMessageDeclaration(Template):
         """generate declaration for message passed in ctor"""
         msg = self._msg
         logger.verbose("generating declaration for " + msg.get_name())
+        # code template
         codeTemplate = string.Template("""
 class $message_name
-    pass
 """ )
+        for field in msg.get_fields():
+            self.add(TFieldDeclaration(field))
+        # substitute template
         code = codeTemplate.substitute( {'message_name' : msg.get_name()})
-
-        logger.debug("chunk of code generated for message " + msg.get_name())
-        logger.debug(code)
         return code
         
         
