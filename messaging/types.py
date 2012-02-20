@@ -36,9 +36,11 @@ class pgFloat(pgNumber):
         
 class pgMessage(pgType):
     def get_fields(self):
-        return filter(lambda f: is_native(f),\
-                          [field() for field in filter(lambda k: isclass(self.__dict__[k]) and issubclass(self.__dict__[k], pgType),\
-                                                           [key for key in self.__dict__.keys()])])
+        def is_field(field):
+            return isclass(field) and issubclass(field, pgType)
+        return [field() for field in filter(lambda k: is_field(self.__dict__[k]),\
+                                                [key for key in self.__dict__.keys()])]
+
 def is_native(t):
     logger.debug("checking " + t.__name__ + " for nativity")
     return t.__name__ in sys.modules[__name__].__dict__
