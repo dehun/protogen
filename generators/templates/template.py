@@ -30,7 +30,7 @@ class Template:
         self._childs_after.insert(order, child)
 
     def add(self, child):
-        self.add_bottom(child)
+        self._childs_after.append(child)
 
     def generate(self):
         """generate body code and child templates code"""
@@ -54,3 +54,12 @@ class Template:
         """method to reimplement in child classes. body code generation is here"""
         return ""
  
+
+class TSimple(Template):
+    def __init__(self, body):
+        Template.__init__(self)
+        self._body = body
+
+    def body(self):
+        return self._body
+
