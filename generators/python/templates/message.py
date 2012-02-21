@@ -1,5 +1,6 @@
 from protogen.generators.templates.template import Template
 from protogen import logger
+from protogen.generators.python.templates.fields import TFieldsDeclarations
 import string
 
 class TMessageDeclaration(Template):
@@ -13,12 +14,14 @@ class TMessageDeclaration(Template):
         logger.verbose("generating declaration for " + msg.get_name())
         # code template
         codeTemplate = string.Template("""
-class $message_name
+class $message_name:
 """ )
-        for field in msg.get_fields():
-            self.add(TFieldDeclaration(field))
         # substitute template
         code = codeTemplate.substitute( {'message_name' : msg.get_name()})
+
+        # add fields
+        self.add(TFieldsDeclarations(msg.get_fields(), msg.get_name()))
+        # ret
         return code
         
         
