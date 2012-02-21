@@ -11,7 +11,6 @@ class TMessageDeclaration(Template):
     def body(self):
         """generate declaration for message passed in ctor"""
         msg = self._msg
-        logger.verbose("generating declaration for " + msg.get_name())
         # code template
         codeTemplate = string.Template("""
 class $message_name:
