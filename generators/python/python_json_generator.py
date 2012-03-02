@@ -3,7 +3,7 @@ from protogen.generators.python.templates.root import Root
 
 class PythonJsonGenerator(BasicGenerator):
     def generate(self, messages, outdir):
-		root = Root(messages)
+		root = Root(messages, 'json')
 		code = root.generate()
 		print code
 		return code
