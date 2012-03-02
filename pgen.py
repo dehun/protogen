@@ -64,9 +64,9 @@ def main():
     conf = parse_params()
     # setup logger
     if (conf.verbose):
-        logger.verbose = True
+        logger.set_verbose(True)
     if (conf.debug):
-        logger.debug = True
+        logger.set_debug(True)
     # create directory
     # load all the messages
     logger.info("loading messages from path \"" + conf.proto + "\"")

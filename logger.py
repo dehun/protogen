@@ -1,6 +1,12 @@
 fverbose = True
 fdebug = True
 
+def set_debug(is_enabled):
+    fdebug = is_enabled
+
+def set_verbose(is_verbose):
+    fverbose = is_verbose
+
 def debug(str):
 	if (fdebug):
 		print str
