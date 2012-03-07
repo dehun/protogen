@@ -59,25 +59,25 @@ def parse_params():
     return conf
 
 def main():
-    logger.info("starting up protogen")
-    # parse input params
+    logger.trace("starting up")
+
+    logger.trace("parsing command line parameters")
     conf = parse_params()
-    # setup logger
+
+    logger.trace("setting logger verbosity level")
     if (conf.verbose):
         logger.set_verbose(True)
     if (conf.debug):
         logger.set_debug(True)
-    # create directory
-    # load all the messages
+
+
     logger.info("loading protocol from path \"" + conf.proto + "\"")
     protocol = ProtocolLoader().load_protocol(conf.proto)
 
-    # get generator
-    logger.info("preparing generator")
+    logger.trace("getting generator from factory")
     generator = GeneratorFactory().get_generator(conf.lang, conf.format)
 
-    # generate to output
-    logger.info("start generation")
+    logger.info("launching generator" + generator.get_name())
     generator.generate(protocol, conf.output)
 
 

@@ -1,9 +1,8 @@
 import imp
 import re
-from inspect import isclass
 from types import pgMessage, is_native
 from protogen import logger
-from protogen.messsaging.protocol import Protocol
+from protogen.messaging.protocol import Protocol
 
 class ProtocolLoader:
     def _load_mod(self, path):
