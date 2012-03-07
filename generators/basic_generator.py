@@ -1,3 +1,3 @@
 class BasicGenerator():
-    def generate(self, messages, outputDir):
+    def generate(self, protocol, outputDir):
         raise NotImplementedError()

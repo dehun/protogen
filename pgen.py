@@ -69,16 +69,16 @@ def main():
         logger.set_debug(True)
     # create directory
     # load all the messages
-    logger.info("loading messages from path \"" + conf.proto + "\"")
-    messages = MessageLoader(conf.proto).get_all()
+    logger.info("loading protocol from path \"" + conf.proto + "\"")
+    protocol = ProtocolLoader().load_protocol(conf.proto)
 
     # get generator
     logger.info("preparing generator")
-    pgenerator = GeneratorFactory().get_generator(conf.lang, conf.format)
+    generator = GeneratorFactory().get_generator(conf.lang, conf.format)
 
     # generate to output
     logger.info("start generation")
-    pgenerator.generate(messages, conf.output)
+    generator.generate(protocol, conf.output)
 
 
 if __name__ == '__main__':

@@ -4,13 +4,13 @@ from protogen.generators.python.templates.deserialize_factory import Deserialize
 from protogen.generators.python.templates.serialize import TSerializers
 
 class Root(Template):
-    def __init__(self, messages, format):
+    def __init__(self, protocol, format):
         Template.__init__(self)
-        self._messages = messages
+        self._protocol = protocol
         self._format = format
 
     def body(self):
-        self.add(Messages(self._messages))
-        self.add(TSerializers(self._messages, self._format))
+        self.add(Messages(self._protocol.get_messages()))
+        self.add(TSerializers(self._protocol.get_messages(), self._format))
 #       self.add(DeserializeFactory(self._messages))
  
