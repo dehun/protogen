@@ -12,7 +12,7 @@ sys.path.append('/home/dehun/dev/home/')
 import getopt
 
 import string
-from protogen.messaging.message_loader import MessageLoader
+from protogen.messaging.protocol_loader import ProtocolLoader
 from protogen.generators.generator_factory import GeneratorFactory
 from protogen import logger
 import pprint
