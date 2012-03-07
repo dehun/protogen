@@ -1,8 +1,10 @@
 from protogen import logger
+from inspect import isclass
+from types import pgMessage, is_native
 
 class Messages:
     def __init__(self, mod):
-        self._messagesList = _load_all_messages(mod)
+        self._messagesList = self._load_all_messages(mod)
 
     def _load_message(self, msg):
         instance = msg()
