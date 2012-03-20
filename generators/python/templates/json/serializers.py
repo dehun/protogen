@@ -1,5 +1,17 @@
-from protogen.generators.templates.template import Template
+from protogen.generators.templates.template import Template, TSimple
+from protogen.utils import indent, json_pair
 import string
+
+class TJsonFieldSerializer(Template):
+    def __init__(self, field, indent):
+        Template.__init__(self)
+        self._field = field
+        self._indent = indent
+
+    def body(self):
+        code = indent(self._indent, "data += \"" + self._field.get_var_name() + "\" : " + \
+                      "\"" + "msg." + self._field.get_var_name() + "\"\n")
+        return code
 
 
 class TJsonFieldsSerializer(Template):
@@ -9,14 +21,17 @@ class TJsonFieldsSerializer(Template):
         self._indent = indent
 
     def body(self):
-        pass
+        indent(self._indent, "data = ''")
+        for field in self._fields:
+            self.add(TJsonFieldSerializer(field, self._indent))
+        self.add(TSimple(indent(self._indent, "return data")))
 
 
 class TJsonMessageSerializer(Template):
     def __init__(self, message):
         Template.__init__(self)
         self._message = message
-
+ 
     def body(self):
         codeTemplate = """
 class $serializerName:
@@ -33,7 +48,7 @@ class $serializerName:
         self.add(TJsonFieldsSerializer(self._message.get_fields(), 2))
         return string.Template(codeTemplate).substitute({'serializerName' : self._message.get_name() + "Serializer",\
                                         'messageName' : self._message.get_name()})
-                                        
+
 
 class TJsonSerializers(Template):
     def __init__(self, messages):
