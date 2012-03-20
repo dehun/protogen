@@ -16,7 +16,7 @@ class TMessageDeclaration(Template):
 class $message_name:
 """ )
         # substitute template
-        code = codeTemplate.substitute( {'message_name' : msg.get_name()})
+        code = codeTemplate.substitute({'message_name' : msg.get_name()})
 
         # add fields
         self.add(TFieldsDeclarations(msg.get_fields(), msg.get_name()))
