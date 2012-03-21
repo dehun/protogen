@@ -13,5 +13,5 @@ class Root(Template):
     def body(self):
         self.add(Messages(self._protocol.get_messages()))
         self.add(TSerializers(self._protocol.get_messages(), self._format))
-        self.add(TDeserializers(self._messages))
+        self.add(TDeserializers(self._protocol.get_messages(), self._format))
  
