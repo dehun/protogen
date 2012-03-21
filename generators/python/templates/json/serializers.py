@@ -9,9 +9,11 @@ class TJsonFieldSerializer(Template):
         self._indent = indent
 
     def body(self):
-        code = indent(self._indent, "data += \"" + self._field.get_var_name() + "\" : " + \
-                      "\"" + "msg." + self._field.get_var_name() + "\"\n")
-        return code
+        codeTemplate = string.Template("""
+data += "\\"" + $fieldName + "\\" : \\"" + msg.$fieldName + "\\""
+""".rstrip('').lstrip('\n'))
+        code = codeTemplate.substitute({'fieldName' : self._field.get_var_name()})
+        return indent(self._indent, code)
 
 
 class TJsonFieldsSerializer(Template):
@@ -21,10 +23,10 @@ class TJsonFieldsSerializer(Template):
         self._indent = indent
 
     def body(self):
-        indent(self._indent, "data = ''")
+        self.add(TSimple(indent(self._indent, "data = ''\n")))
         for field in self._fields:
             self.add(TJsonFieldSerializer(field, self._indent))
-        self.add(TSimple(indent(self._indent, "return data")))
+        self.add(TSimple(indent(self._indent, "return data\n")))
 
 
 class TJsonMessageSerializer(Template):
@@ -35,16 +37,14 @@ class TJsonMessageSerializer(Template):
     def body(self):
         codeTemplate = """
 class $serializerName:
-    @staticmethod
     def serialize(msg):
         data = '"$messageName" : {'
-        data += $serializerName.serialize_fields(msg)
+        data += self.serialize_fields(msg)
         data += '}'
         return data
 
-    @staticmethod
     def serialize_fields(self, msg):
-        """
+"""
         self.add(TJsonFieldsSerializer(self._message.get_fields(), 2))
         return string.Template(codeTemplate).substitute({'serializerName' : self._message.get_name() + "Serializer",\
                                         'messageName' : self._message.get_name()})

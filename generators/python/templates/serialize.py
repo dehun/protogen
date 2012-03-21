@@ -2,7 +2,7 @@ from protogen.generators.templates.template import Template
 from protogen.generators.python.templates.json.serializers import TJsonSerializers
 from protogen.utils import indent
 
-class TSerializerDict(Template):
+class TSerializerDictInit(Template):
     def __init__(self, message, indent):
         Template.__init__(self)
         self._message = message
@@ -10,16 +10,8 @@ class TSerializerDict(Template):
 
     def body(self):
         messageName = self._message.get_name()
-        code = indent(self._indent, "serializers['" + messageName + "'] = " + messageName + "Serializer\n")
+        code = indent(self._indent, "self._serializers['" + messageName + "'] = " + messageName + "Serializer\n")
         return code
-
-class TGetSerializer(Template):
-    def __init__(self, indent):
-        Template.__init__(self)
-        self._indent = indent
-
-    def body(self):
-        return indent(self._indent, "return serializers[msg.get_name()]\n")
 
 class TSerializers(Template):
     def __init__(self, messages, format):
@@ -31,19 +23,20 @@ class TSerializers(Template):
     def body(self):
         code = """
 class MessageSerializer:
-    @staticmethod
     def serialize(self, msg):
         serializer = self.get_serializer(msg)
         return serializer.serialize(msg)
 
-    @staticmethod
     def get_serializer(msg):
-        serializers = {}
+        return self._serializers[msg.get_name()]
+
+    def __init__(self):
+        self._serializers = {}
 """
-        # form getters for serializers
+        # init dict for getting serializers by name
+        logger.trace("initializing dictionary with serializers")
         for msg in self._messages.as_list():
-            self.add(TSerializerDict(msg, 2))
-        self.add(TGetSerializer(2))
+            self.add(TSerializerDictInit(msg, 2))
 
         # form serializer classes
         self.add(self._templates[self._format](self._messages))
