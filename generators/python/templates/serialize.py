@@ -1,6 +1,7 @@
 from protogen.generators.templates.template import Template
 from protogen.generators.python.templates.json.serializers import TJsonSerializers
 from protogen.utils import indent
+from protogen import logger
 
 class TSerializerDictInit(Template):
     def __init__(self, message, indent):
