@@ -2,6 +2,9 @@ import sys
 from inspect import isclass
 from protogen import logger
 
+class UnknownTypeException(Exception):
+    pass
+
 class AlreadyHaveANameException(Exception):
     pass
 class DontHaveANameException(Exception):

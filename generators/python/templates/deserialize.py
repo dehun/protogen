@@ -2,17 +2,6 @@ from protogen.generators.templates.template import Template
 from protogen.generators.python.templates.json.deserializers import TJsonDeserializers
 from protogen.utils import indent
 
-class TDeserializerDictInit(Template):
-    def __init__(self, message, indent):
-        Template.__init__(self)
-        self._message = message
-        self._indent = indent
-
-    def body(self):
-        messageName = self._message.get_name()
-        code = indent(self._indent, "self._deserializers['" + messageName + "] = " + messageName + "Deserializer\n")
-        return code
-
 
 class TDeserializers(Template):
     def __init__(self, messages, format):
@@ -36,9 +25,12 @@ class MessageDeserializer:
     def __init__(self):
         self._deserializers = {}
 """
-        # form 
+        # form dictionary of deserializers
         for msg in self._messages.as_list():
-            self.add(TDeserializerDictInit(msg, 2))
-        return code
+            messageName = self._message.get_name()
+            code += indent(self._indent, "self._deserializers['" + messageName + "] = " + messageName + "Deserializer\n")
 
-    
+        # form deserializers
+        self.add(self._templates[self._format](self._messages))
+        
+        return code

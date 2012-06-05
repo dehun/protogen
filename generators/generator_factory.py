@@ -1,4 +1,5 @@
 from python.python_json_generator import PythonJsonGenerator
+from erlang.erlang_binary_generator import ErlangBinaryGenerator
 
 class PythonBinaryGenerator:
 	pass
@@ -24,7 +25,8 @@ class GeneratorFactory:
                                        'c++' : {'json' : CppJsonGenerator(),
                                                 'binary' : CppBinaryGenerator()},
                                        'as3' : {'json' : AS3JsonGenerator(),
-                                                'binary' : AS3BinaryGenerator()}
+                                                'binary' : AS3BinaryGenerator()},
+                                       'erlang' : {'binary' : ErlangBinaryGenerator()}
                                        }
         
     def get_generator(self, lang, format):
