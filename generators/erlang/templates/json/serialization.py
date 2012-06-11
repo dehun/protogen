@@ -8,10 +8,10 @@ class MessagesSerialization(Template):
         self._protocol = protocol
 
     def body(self):
-        code = ""
-        code += "-module(json_messaging)." + "\n"
-        code += "-export([serialize_message/1, deserialize_message/1])." + "\n"
+        self.add(TSimple("-module(json_messaging)."))
+        self.add(TSimple('-include("messaging.hrl").'))
+        self.add(TSimple("-export([serialize_message/1, deserialize_message/1]).")) 
         self.add(MessageSerializers(self._protocol))
         self.add(MessageDeserializers(self._protocol))
-        return code
+
         
