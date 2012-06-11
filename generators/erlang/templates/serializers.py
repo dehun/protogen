@@ -1,6 +1,6 @@
 from protogen.generators.templates.template import Template, TSimple
 from protogen.messaging.message_identifyer import get_message_identifyer
-from protogen.messaging.types import pgString, pgNumber, pgMessage, pgFloat
+from protogen.messaging.types import pgString, pgInteger, pgMessage, pgFloat
 
 class MessageSerializer(Template):
     def __init__(self, message):
@@ -23,7 +23,7 @@ class MessageSerializer(Template):
     def _serialize_field(self, msg, field):
         if isinstance(field, pgString):
             return self._serialize_string_field(msg, field)
-        elif isinstance(field, pgNumber):
+        elif isinstance(field, pgInteger):
             return self._serialize_number_field(msg, field)
         elif isinstance(field, pgFloat):
             return self._serialize_float_field(msg, field)

@@ -56,10 +56,11 @@ class Template:
  
 
 class TSimple(Template):
-    def __init__(self, body):
+    def __init__(self, body, indent=0):
         Template.__init__(self)
         self._body = body
+        self._indent=indent
 
     def body(self):
-        return self._body
+        return "    " * self._indent + self._body + "\n"
 

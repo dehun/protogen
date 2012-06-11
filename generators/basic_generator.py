@@ -1,3 +1,5 @@
+from protogen import logger
+
 class BasicGenerator():
     def generate(self, protocol, outputDir):
         raise NotImplementedError()
@@ -6,5 +8,8 @@ class BasicGenerator():
         return self.__class__.__name__
 
     def _generate_to_file(self, generator, outdir, filename):
+        path = outdir + filename
+        logger.info("Writing %s generator's out to path %s" % (generator.get_name(), path))
         code = generator.generate()
-        print code
+        with open(path, "w+") as outFile:
+            outFile.write(code)

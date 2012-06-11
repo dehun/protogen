@@ -1,21 +1,17 @@
 from protogen.generators.templates.template import Template, TSimple
 from protogen.messaging.message_identifyer import get_message_identifyer
-from protogen.messaging.types import pgString, pgNumber, pgMessage, pgFloat
+from protogen.messaging.types import pgString, pgInteger, pgMessage, pgFloat
 
 class MessageDeserializer(Template):
     def __init__(self, message):
         Template.__init__(self)
         self._message = message
 
-    def _deserialize_field(self, message, field):
-        pass
-
     def body(self):
         code = "\n"
-        code += "deserialize_message(%d, MsgBin) ->\n" % (get_message_identifyer().identify(self._message))
-        code += "    #%s{" % (self._message.get_name().lower())
-        code += ",".join([self._deserialize_field(self._message, field) for field in self._message.get_fields()])
-        code + "     };\n"
+        for i in range(0, len(self._message.get_fields())):
+            pass
+#            code += "deserialize_message(%d, MsgBin, 1, FieldNum) ->\n" % (get_message_identifyer().identify(self._message))
         return code
 
 
