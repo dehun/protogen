@@ -12,5 +12,5 @@ class SimpleTwo(pgMessage):
 
 class SimpleThreeWithLists(pgMessage):
     title = pgString()
-    ids = pgList(pgString())
+#    ids = pgList(pgString())
     
