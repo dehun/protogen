@@ -5,10 +5,14 @@ from protogen import logger
 class UnknownTypeException(Exception):
     pass
 
+
 class AlreadyHaveANameException(Exception):
     pass
+
+
 class DontHaveANameException(Exception):
     pass
+
 
 class pgType:
     def __init__(self):
@@ -30,33 +34,24 @@ class pgType:
     def has_var_name(self):
         return self._var_name != None
 
-
-class pgTypeWithDefault(pgType):
-    def __init__(self, defaultValue):
+class pgList(pgType):
+    def __init__(self, listType):
         pgType.__init__(self)
-        self._defaultValue = defaultValue
-    
-    def get_default_value(self):
-        return self._defaultValue
+        self.listType = listType
 
 
-class pgString(pgTypeWithDefault):
-    def __init__(self, defaultValue=""):
-        pgTypeWithDefault.__init__(self, defaultValue)
+class pgString(pgType):
+    def __init__(self):
+        pgType.__init__(self)
 
 
-class pgNumber(pgTypeWithDefault):
-    def __init__(self, defaultValue=0, signed=True):
-        pgTypeWithDefault.__init__(self, defaultValue )
-        self._signed = signed
+class pgInteger(pgType):
+    def __init__(self):
+        pgType.__init__(self)
 
-    def is_signed(self):
-        return self._signed
-
-
-class pgFloat(pgNumber):
-    def __init__(self, defaultValue=0.0, signed=True):
-        pgNumber.__init__(self, defaultValue, signed)
+class pgFloat(pgType):
+    def __init__(self):
+        pgType.__init__(self)
         
 class pgMessage(pgType):
     def _load_field(self, key):
