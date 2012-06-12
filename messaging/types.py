@@ -37,7 +37,10 @@ class pgType:
 class pgList(pgType):
     def __init__(self, listType):
         pgType.__init__(self)
-        self.listType = listType
+        self._listType = listType
+
+    def get_element_type(self):
+        return self._listType
 
 
 class pgString(pgType):
