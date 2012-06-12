@@ -19,6 +19,7 @@ class MessageSerializers(Template):
 serialize_int(Val) -> lists:concat(['"', Val, '"']).
 serialize_float(Val) -> lists:concat(['"', Val, '"']).
 serialize_string(Val) ->lists:concat(['"', Val, '"']).
+serialize_list(Fun, Value) -> nope.
         """))
 
 
@@ -109,11 +110,9 @@ class TListFieldSerializer(Template):
 
     
     def body(self):
-        tmp = StringTemplate("""
-        lists:map(fun (Value) -> $serializer end, $valueName)
-        """)
-        return tmp.substitute({'valueName' : self._valueName,
-                               'serializer' : FieldSerializerFactory().get_Field_serializer(self._field, 'Value')})
+        self.add(TSimple('serialize_list(fun (Value) ->'))
+        self.add(FieldSerializersFactory().get_field_serializer(self._field.get_element_type(), 'Value'))
+        self.add(TSimple(StringTemplate('end, $valueName)').substitute({'valueName' : self._valueName})))
         
 
 

@@ -10,7 +10,7 @@ class SimpleOne(pgMessage):
 class SimpleTwo(pgMessage):
     title = pgString()
 
-class SimpleThreeWithLists(pgMessage):
+class S3(pgMessage):
     title = pgString()
-#    ids = pgList(pgString())
+    ids = pgList(pgString())
     
