@@ -64,3 +64,19 @@ class TSimple(Template):
     def body(self):
         return "    " * self._indent + self._body + "\n"
 
+
+class TComaSeparated(Template):
+    def __init__(self, templates, coma = ',', indent=0):
+        Template.__init__(self)
+        self._templates = templates
+        self._indent = indent
+        self._coma = coma
+
+    def body(self):
+        first = True
+        for temp in self._templates:
+            if not first:
+                self.add(TSimple(self._coma, self._indent))
+            first = False
+            self.add(temp)
+                
