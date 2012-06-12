@@ -1,6 +1,6 @@
 from protogen import logger
 from protogen.generators.templates.template import Template, TSimple
-from protogen.messaging.types import pgString, pgInteger, pgFloat, pgMessage, pgList
+from protogen.messaging.types import pgString, pgInteger, pgFloat, pgMessage, pgList, UnknownTypeException
 from string import Template as StringTemplate
 
 class MessageSerializers(Template):
@@ -54,6 +54,7 @@ class FieldSerializersFactory:
         for key in self._serializers.keys():
             if isinstance(field, key):
                 return self._serializers[key](field, message)
+        raise UnknownTypeException()
 
 
 class TStringFieldSerializer(Template):
