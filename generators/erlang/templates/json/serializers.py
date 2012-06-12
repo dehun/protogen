@@ -14,6 +14,12 @@ class MessageSerializers(Template):
             logger.debug("adding template for serializating %s message" % message.get_name())
             self.add(MessageSerializer(message))
         self.add(TSimple("serialize_message(Msg) -> unknown_message."))
+        # helper functions
+        self.add(TSimple("""
+serialize_int(Val) -> lists:concat(['"', Val, '"']).
+serialize_float(Val) -> lists:concat(['"', Val, '"']).
+serialize_string(Val) ->lists:concat(['"', Val, '"']).
+        """))
 
 
 class MessageSerializer(Template):
@@ -35,7 +41,7 @@ class MessageSerializer(Template):
             first = False
             # serialize field
             self.add(TSimple("""lists:concat(["\\"%s\\" :", """  % field.get_var_name()))
-            self.add(FieldSerializersFactory().get_field_serializer(field, message))
+            self.add(FieldSerializersFactory().get_field_serializer(field, "Msg#%s.%s" % (message.get_name().lower(), field.get_var_name().lower())))
             self.add(TSimple("])"))
         self.add(TSimple("""], ",") """))
         self.add(TSimple(""" , "}}" ]); """))
@@ -50,73 +56,65 @@ class FieldSerializersFactory:
         self._serializers[pgMessage] = TMessageFieldSerializer
         self._serializers[pgList] = TListFieldSerializer
 
-    def get_field_serializer(self, field, message):
-        for key in self._serializers.keys():
-            if isinstance(field, key):
-                return self._serializers[key](field, message)
-        raise UnknownTypeException()
+    def get_field_serializer(self, field, valueName):
+        return self._serializers[field.__class__](field, valueName)
 
 
 class TStringFieldSerializer(Template):
-    def __init__(self, field, message):
+    def __init__(self, field, valueName):
         Template.__init__(self)
-        self._field = field
-        self._message = message
+        self._valueName = valueName
 
     def body(self):
-        tmp = StringTemplate(""" lists:concat(["\\"", Msg#$messageName.$fieldName, "\\""]) """)
-        return tmp.substitute({'messageName' : self._message.get_name().lower(),
-                               'fieldName' : self._field.get_var_name().lower()})
+        tmp = StringTemplate(""" serialize_string($valueName) """)
+        return tmp.substitute({'valueName' : self._valueName})
 
 
 class TIntegerFieldSerializer(Template):
-    def __init__(self, field, message):
+    def __init__(self, field, valueName):
         Template.__init__(self)
-        self._field = field
-        self._message = message
+        self._valueName = valueName
 
     def body(self):
-        tmp = StringTemplate(""" lists:concat(["\\"", integer_to_list(Msg#$messageName.$fieldName), "\\""]) """)
-        return tmp.substitute({'messageName' : self._message.get_name().lower(),
-                               'fieldName' : self._field.get_var_name().lower()})
+        tmp = StringTemplate("""serialize_int($valueName)""")
+        return tmp.substitute({'valueName' : self._valueName})
+
 
 
 class TFloatFieldSerializer(Template):
-    def __init__(self, field, message):
+    def __init__(self, field, valueName):
         Template.__init__(self)
-        self._field = field
-        self._message = message
+        self._valueName = valueName
 
     def body(self):
-        tmp = StringTemplate(""" lists:concat(["\\"", integer_to_list(Msg#$messageName.$fieldName), "\\""]) """)
-        return tmp.substitute({'messageName' : self._message.get_name().lower(),
-                               'fieldName' : self._field.get_var_name().lower()})
+        tmp = StringTemplate("""serialize_float($valueName) """)
+        return tmp.substitute({'valueName' : self._valueName})
 
 class TMessageFieldSerializer(Template):
-    def __init__(self, field, message):
+    def __init__(self, field, valueName):
         Template.__init__(self)
-        self._field = field
-        self._message = message
+        self._valueName = valueName
 
     def body(self):
-        tmp = StringTemplate(""" lists:concat([serialize_message(Msg#$messageName.$fieldName)]) """)
-        return tmp.substitute({'messageName' : self._message.get_name().lower(),
-                               'fieldName' : self._field.get_var_name().lower()})
+        tmp = StringTemplate(""" serialize_message($valueName) """)
+        return tmp.substitute({'valueName' : self._valueName})
 
 
 
 class TListFieldSerializer(Template):
-    def __init__(self, field, message):
+    def __init__(self, field, valueName):
         Template.__init__(self)
+        self._valueName = valueName
         self._field = field
-        self._message = message
 
+    
     def body(self):
-        pass
-#        tmp = StringTemplate(""" lists:concat(["\\"", integer_to_list(Msg#$messageName.$fieldName), "\\""]) """)
-#        return tmp.substitute({'messageName' : self._message.get_name().lower(),
-#                               'fieldName' : self._field.get_var_name().lower()})
-
+        tmp = StringTemplate("""
+        lists:map(fun (Value) -> $serializer end, $valueName)
+        """)
+        return tmp.substitute({'valueName' : self._valueName,
+                               'serializer' : FieldSerializerFactory().get_Field_serializer(self._field, 'Value')})
+        
 
 
 

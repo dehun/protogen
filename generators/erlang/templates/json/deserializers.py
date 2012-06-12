@@ -24,6 +24,15 @@ inner_deserialize_message(DecodedJson) ->
     inner_deserialize_message(MessageName, DecodedMsgBody).
 
 %% helper functions
+deserialize_int(Data) ->
+    bstring_to_int(Data).
+
+deserialize_float(Data) ->
+    bstring_to_float(Data).
+
+deserialize_string(Data) ->
+    binary_to_list(Data).
+
 bstring_to_int(Bstring) ->
     {Int, _Rest} = string:to_integer(binary_to_list(Bstring)),
     Int.
@@ -40,7 +49,7 @@ class MessageDeserializer(Template):
 
     def body(self):
         # function header
-        self.add(TSimple(StringTemplate('inner_deserialize_message(MsgName, MsgBody) when MsgName == "$messageName" ->').substitute({'messageName' : self._message.get_name()})))
+        self.add(TSimple(StringTemplate('inner_deserialize_message(<<"$messageName">>, MsgBody)  ->').substitute({'messageName' : self._message.get_name()})))
         self.add(TSimple(StringTemplate('#$messageName{').substitute({'messageName' : self._message.get_name().lower()}), 1))
         # serialize fields
         deserializers = []
@@ -82,7 +91,7 @@ class TIntegerFieldDeserializer(Template):
         self._message = message
 
     def body(self):
-        self.add(TSimple(StringTemplate("bstring_to_int(proplists:get_value($fieldName, MsgBody))").substitute({'fieldName' : self._field.get_var_name()}), indent=1))
+        self.add(TSimple(StringTemplate('deserialize_int(proplists:get_value(<<"$fieldName">>, MsgBody))').substitute({'fieldName' : self._field.get_var_name()}), indent=1))
 
 class TFloatFieldDeserializer(Template):
     def __init__(self, field, message):
@@ -91,7 +100,7 @@ class TFloatFieldDeserializer(Template):
         self._message = message
 
     def body(self):
-        self.add(TSimple(StringTemplate("bstring_to_float(proplists:get_value($fieldName, MsgBody))").substitute({'fieldName' : self._field.get_var_name()}), indent=1))
+        self.add(TSimple(StringTemplate('deserialize_float(proplists:get_value(<<"$fieldName">>, MsgBody))').substitute({'fieldName' : self._field.get_var_name()}), indent=1))
 
 class TStringFieldDeserializer(Template):
     def __init__(self, field, message):
@@ -100,7 +109,7 @@ class TStringFieldDeserializer(Template):
         self._message = message
 
     def body(self):
-        self.add(TSimple(StringTemplate("binary_to_list(proplists:get_value($fieldName, MsgBody))").substitute({'fieldName' : self._field.get_var_name()})))
+        self.add(TSimple(StringTemplate('deserialize_string(proplists:get_value(<<"$fieldName">>, MsgBody))').substitute({'fieldName' : self._field.get_var_name()})))
 
 class TMessageFieldDeserializer(Template):
     def __init__(self, field, message):
