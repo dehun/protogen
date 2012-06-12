@@ -19,7 +19,7 @@ class MessageSerializers(Template):
 serialize_int(Val) -> lists:concat(['"', Val, '"']).
 serialize_float(Val) -> lists:concat(['"', Val, '"']).
 serialize_string(Val) ->lists:concat(['"', Val, '"']).
-serialize_list(Fun, Value) -> nope.
+serialize_list(Fun, Value) -> lists:concat(["[", string:join(lists:map(Fun, Value), ","), "]"]).
         """))
 
 
