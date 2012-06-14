@@ -8,9 +8,10 @@
 
 import sys
 import os
+import re
 
-INSTALL_PATH = os.path.abspath("..")
-sys.path.append(INSTALL_PATH)
+INSTALL_PATH = (re.search("(.+/).+\.py", os.path.abspath(__file__)).group(1))
+sys.path.append(INSTALL_PATH + "..")
 
 import getopt
 
