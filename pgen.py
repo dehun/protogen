@@ -5,9 +5,8 @@
 ##
 
 import sys
-sys.path.append('..')
-sys.path.append('/home/dehun/dev/home/')
-
+INSTALL_PATH = os.path.abspath("..")
+sys.path.append(INSTALL_PATH)
 
 import getopt
 
