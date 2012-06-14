@@ -13,4 +13,8 @@ class SimpleTwo(pgMessage):
 class S3(pgMessage):
     title = pgString()
     ids = pgList(pgString())
+
+class S4(pgMessage):
+    title = pgString()
+    ids = pgList(pgList(pgInteger()))
     
