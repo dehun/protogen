@@ -1,3 +1,5 @@
+#!/usr/bin/python
+
 ##
 ## protocol generator
 ## invocation examples
