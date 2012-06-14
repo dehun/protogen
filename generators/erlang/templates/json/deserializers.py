@@ -124,7 +124,6 @@ class TListFieldDeserializer(Template):
         self._valueName = valueName
 
     def body(self):
-        self.add(TSimple(StringTemplate("deserialize_list(fun(Val) -> $deserializer end, $valueName)").substitute({
-            'deserializer' : FieldDeserializersFactory().get_deserializer(self._field.get_element_type(), 'Val'),
-            'valueName' : self._valueName
-            })))
+        self.add(TSimple("deserialize_list(fun(Val) -> "))
+        self.add(FieldDeserializersFactory().get_deserializer(self._field.get_element_type(), 'Val'))
+        self.add(TSimple("end, %s)" % (self._valueName)))
