@@ -1,6 +1,6 @@
-fverbose = True
-fdebug = True
-ftrace = True
+fverbose = False
+fdebug = False
+ftrace = False
 
 def set_debug(is_enabled):
     fdebug = is_enabled
