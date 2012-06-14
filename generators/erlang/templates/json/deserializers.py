@@ -33,6 +33,9 @@ deserialize_float(Data) ->
 deserialize_string(Data) ->
     binary_to_list(Data).
 
+deserialize_list(Fun, List) ->
+    lists:map(Fun, List).
+
 bstring_to_int(Bstring) ->
     {Int, _Rest} = string:to_integer(binary_to_list(Bstring)),
     Int.
@@ -67,7 +70,7 @@ class TFieldDeserializer(Template):
 
     def body(self):
         self.add(TSimple(StringTemplate("$fieldName=").substitute({'fieldName' : self._field.get_var_name().lower()})))
-        self.add(FieldDeserializersFactory().get_deserializer(self._message, self._field))
+        self.add(FieldDeserializersFactory().get_deserializer(self._field, 'proplists:get_value(<<"%s">>, MsgBody)' % self._field.get_var_name()))
 
 class FieldDeserializersFactory:
     def __init__(self):
@@ -77,54 +80,51 @@ class FieldDeserializersFactory:
                                pgMessage : TMessageFieldDeserializer,
                                pgList : TListFieldDeserializer}
 
-    def get_deserializer(self, message, field):
-        for key in self._deserializers:
-            if isinstance(field, key):
-                return self._deserializers[key](field, message)
-        raise UnknownTypeException()
+    def get_deserializer(self, field, valueName):
+        return self._deserializers[field.__class__](field, valueName)
+        
         
 
 class TIntegerFieldDeserializer(Template):
-    def __init__(self, field, message):
+    def __init__(self, field, valueName):
         Template.__init__(self)
-        self._field = field
-        self._message = message
+        self._valueName = valueName
 
     def body(self):
-        self.add(TSimple(StringTemplate('deserialize_int(proplists:get_value(<<"$fieldName">>, MsgBody))').substitute({'fieldName' : self._field.get_var_name()}), indent=1))
+        self.add(TSimple(StringTemplate('deserialize_int($valueName)').substitute({'valueName' : self._valueName}), indent=1))
 
 class TFloatFieldDeserializer(Template):
-    def __init__(self, field, message):
+    def __init__(self, field, valueName):
         Template.__init__(self)
-        self._field = field
-        self._message = message
+        self._valueName = valueName
 
     def body(self):
-        self.add(TSimple(StringTemplate('deserialize_float(proplists:get_value(<<"$fieldName">>, MsgBody))').substitute({'fieldName' : self._field.get_var_name()}), indent=1))
+        self.add(TSimple(StringTemplate('deserialize_float($valueName)').substitute({'valueName' : self._valueName}), indent=1))
 
 class TStringFieldDeserializer(Template):
-    def __init__(self, field, message):
+    def __init__(self, field, valueName):
         Template.__init__(self)
-        self._field = field
-        self._message = message
+        self._valueName = valueName
 
     def body(self):
-        self.add(TSimple(StringTemplate('deserialize_string(proplists:get_value(<<"$fieldName">>, MsgBody))').substitute({'fieldName' : self._field.get_var_name()})))
+        self.add(TSimple(StringTemplate('deserialize_string($valueName)').substitute({'valueName' : self._valueName}), indent=1))
 
 class TMessageFieldDeserializer(Template):
-    def __init__(self, field, message):
+    def __init__(self, field, valueName):
         Template.__init__(self)
-        self._field = field
-        self._message = message
+        self._valueName = valueName
 
     def body(self):
-        self.add(TSimple(StringTemplate("inner_deserialize_message(proplists:get_value($fieldName, MsgBody))").substitute({'fieldName' : self._field.get_var_name()})))
+        self.add(TSimple(StringTemplate("inner_deserialize_message($valueName)").substitute({'valueName' : self._valueName}), indent=1))
 
 class TListFieldDeserializer(Template):
-    def __init__(self, field, message):
+    def __init__(self, field, valueName):
         Template.__init__(self)
         self._field = field
-        self._message = message
+        self._valueName = valueName
 
     def body(self):
-        pass
+        self.add(TSimple(StringTemplate("deserialize_list(fun(Val) -> $deserializer end, $valueName)").substitute({
+            'deserializer' : FieldDeserializersFactory().get_deserializer(self._field.get_element_type(), 'Val'),
+            'valueName' : self._valueName
+            })))
