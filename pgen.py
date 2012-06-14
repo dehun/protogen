@@ -7,6 +7,8 @@
 ##
 
 import sys
+import os
+
 INSTALL_PATH = os.path.abspath("..")
 sys.path.append(INSTALL_PATH)
 
