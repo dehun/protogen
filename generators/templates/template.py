@@ -80,3 +80,10 @@ class TComaSeparated(Template):
             first = False
             self.add(temp)
                 
+class TNewLine(Template):
+    def __init__(self, count=1):
+        Template.__init__(self)
+        self._count = count
+
+    def body(self):
+        return "\n" * self._count
