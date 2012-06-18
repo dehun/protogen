@@ -9,10 +9,13 @@ class MessageDeclaration(Template):
     def body(self):
         self.add(TSimple(StringTemplate("class $messageName:").substitute({'messageName' : self._message.get_name()})))
         # __init__
-        self.add(TSimple(StringTemplate("def __init__(self, $fields):").substitute({'fields' :
-                                                                                    ",".join([field.get_var_name()
-                                                                                              for field in self._message.get_fields()])}),
-                         indent = 1))
+        if (len(self._message.get_fields())) > 0:
+            self.add(TSimple(StringTemplate("def __init__(self, $fields):").substitute({'fields' :
+                                                                                        ",".join([field.get_var_name()
+                                                                                                  for field in self._message.get_fields()])}),
+                             indent = 1))
+        else: # handle empty messages
+            self.add(TSimple("def __init__(self): pass", indent=1))
         # set value of fields
         for field in self._message.get_fields():
             self.add(TSimple(StringTemplate("self.$fieldName = $fieldName").substitute({'fieldName' :
