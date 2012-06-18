@@ -3,6 +3,7 @@ from protogen.messaging.message_identifyer import get_message_identifyer
 from protogen.messaging.types import pgString, pgInteger, pgMessage, pgFloat, pgList
 from string import Template as StringTemplate
 from utils import indent
+from protogen.generators.erlang.utils import make_erlang_atom
 
 class JsonMessageDeserializer(Template):
     def __init__(self, message):
