@@ -43,6 +43,7 @@ $deserializersInit
                              indent(2,
                                'self._deserializers["$messageName"] = _${messageName}Deserializer()')
                              ).substitute({'messageName' : msg.get_name()}) for msg in self._protocol.get_messages().as_list()])})))
+        self.add(TSimple("jsonDeserializer = JsonDeserializer()"))
 
 
 class JsonMessageDeserializer(Template):
@@ -54,7 +55,7 @@ class JsonMessageDeserializer(Template):
         # class and function header
         self.add(TSimple(StringTemplate("""
 class _${messageName}Deserializer:
-    def deserialize(decoded):
+    def deserialize(self, decoded):
         return $messageName(""").substitute({'messageName' : self._message.get_name()})))
         # deserializer function body
         self.add(TComaSeparated([TSimple(
