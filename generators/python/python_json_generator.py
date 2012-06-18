@@ -1,6 +1,7 @@
 from protogen.generators.basic_generator import BasicGenerator
 from protogen.generators.python.templates.declarations import MessageDeclarations
 from protogen.generators.python.templates.json.serialization import JsonSerialization
+from protogen.generators.python.templates.utils import MessagingUtils
 from protogen import logger
 
 class PythonJsonGenerator(BasicGenerator):
@@ -12,4 +13,6 @@ class PythonJsonGenerator(BasicGenerator):
         self._generate_to_file(MessageDeclarations(protocol), outdir, "messaging.py")
         # generate serialization
         self._generate_to_file(JsonSerialization(protocol), outdir, "json_messaging.py")
+        # generate helper functions and utils
+        self._generate_to_file(MessagingUtils(protocol), outdir, "messaging_utils.py")
 
