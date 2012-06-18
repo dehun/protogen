@@ -1,5 +1,8 @@
 from protogen.messaging.types import *
 
+class EmptyOne(pgMessage):
+    pass
+
 class SimpleOne(pgMessage):
     title = pgString()
     body  = pgString()
