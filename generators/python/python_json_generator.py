@@ -10,9 +10,9 @@ class PythonJsonGenerator(BasicGenerator):
 
     def generate(self, protocol, outdir):
         # generate declarations
-        self._generate_to_file(MessageDeclarations(protocol), outdir, "messaging.py")
+        self._generate_to_file(MessageDeclarations(protocol), outdir, protocol.get_name() + "_messaging.py")
         # generate serialization
-        self._generate_to_file(JsonSerialization(protocol), outdir, "json_messaging.py")
+        self._generate_to_file(JsonSerialization(protocol), outdir, protocol.get_name() + "_json_messaging.py")
         # generate helper functions and utils
         self._generate_to_file(MessagingUtils(protocol), outdir, "messaging_utils.py")
 

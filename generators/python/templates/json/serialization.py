@@ -1,6 +1,7 @@
 from protogen.generators.templates.template import Template, TSimple
 from protogen.generators.python.templates.json.serializers import JsonSerializers
 from protogen.generators.python.templates.json.deserializers import JsonDeserializers
+from string import Template as StringTemplate
 
 
 class JsonSerialization(Template):
@@ -16,7 +17,8 @@ class JsonSerialization(Template):
 # do not edit
         """))
         # imports
-        self.add(TSimple("from messaging import *"))
+        self.add(TSimple(StringTemplate("from ${protocolName}_messaging import *").substitute({'protocolName' :
+                                                                                              self._protocol.get_name()})))
         # generate serializers
         self.add(JsonSerializers(self._protocol))
         # generate deserializers

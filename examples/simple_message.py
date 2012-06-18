@@ -1,5 +1,7 @@
 from protogen.messaging.types import *
 
+protocolName = "simpleMessages"
+
 class EmptyOne(pgMessage):
     pass
 
