@@ -2,6 +2,7 @@ from protogen import logger
 from protogen.generators.templates.template import Template, TSimple, TComaSeparated
 from protogen.messaging.types import pgString, pgInteger, pgFloat, pgMessage, pgList, UnknownTypeException
 from string import Template as StringTemplate
+from protogen.generators.erlang.utils import make_erlang_atom
 
 class MessageDeserializers(Template):
     def __init__(self, protocol):
@@ -53,7 +54,7 @@ class MessageDeserializer(Template):
     def body(self):
         # function header
         self.add(TSimple(StringTemplate('inner_deserialize_message(<<"$messageName">>, MsgBody)  ->').substitute({'messageName' : self._message.get_name()})))
-        self.add(TSimple(StringTemplate('#$messageName{').substitute({'messageName' : self._message.get_name().lower()}), 1))
+        self.add(TSimple(StringTemplate('#$messageName{').substitute({'messageName' : make_erlang_atom(self._message.get_name())}), 1))
         # serialize fields
         deserializers = []
         for field in self._message.get_fields():
@@ -69,7 +70,7 @@ class TFieldDeserializer(Template):
         self._field = field
 
     def body(self):
-        self.add(TSimple(StringTemplate("$fieldName=").substitute({'fieldName' : self._field.get_var_name().lower()})))
+        self.add(TSimple(StringTemplate("$fieldName=").substitute({'fieldName' : make_erlang_atom(self._field.get_var_name())})))
         self.add(FieldDeserializersFactory().get_deserializer(self._field, 'proplists:get_value(<<"%s">>, MsgBody)' % self._field.get_var_name()))
 
 class FieldDeserializersFactory:

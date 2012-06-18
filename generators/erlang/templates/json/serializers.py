@@ -1,7 +1,9 @@
 from protogen import logger
 from protogen.generators.templates.template import Template, TSimple
 from protogen.messaging.types import pgString, pgInteger, pgFloat, pgMessage, pgList, UnknownTypeException
+from protogen.generators.erlang.utils import make_erlang_atom
 from string import Template as StringTemplate
+
 
 class MessageSerializers(Template):
     def __init__(self, protocol):
@@ -31,7 +33,7 @@ class MessageSerializer(Template):
     def body(self):
         Template.body(self)
         message = self._message
-        self.add(TSimple("serialize_message(Msg) when is_record(Msg, %s) ->" % message.get_name().lower()))
+        self.add(TSimple("serialize_message(Msg) when is_record(Msg, %s) ->" % make_erlang_atom(message.get_name())))
         self.add(TSimple(""" lists:concat(["{ \\"%s\\" :  {", """ % message.get_name()))
         self.add(TSimple("string:join(["))
         first = True
@@ -42,7 +44,8 @@ class MessageSerializer(Template):
             first = False
             # serialize field
             self.add(TSimple("""lists:concat(["\\"%s\\" :", """  % field.get_var_name()))
-            self.add(FieldSerializersFactory().get_field_serializer(field, "Msg#%s.%s" % (message.get_name().lower(), field.get_var_name().lower())))
+            self.add(FieldSerializersFactory().get_field_serializer(field, "Msg#%s.%s" % (make_erlang_atom(message.get_name()),
+                                                                                          make_erlang_atom(field.get_var_name()))))
             self.add(TSimple("])"))
         self.add(TSimple("""], ",") """))
         self.add(TSimple(""" , "}}" ]); """))
