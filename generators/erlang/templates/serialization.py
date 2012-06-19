@@ -12,6 +12,7 @@ class MessagesSerialization(Template):
         code = ""
         code += StringTemplate("-module(${protoname}_json_messaging).\n").substitute({'protoname' : self._protocol.get_name()})
         code += "-export([serialize_message/1, deserialize_message/1]).\n"
+        code += StringTemplate('-include("${protoname}_messaging.hrl")').substitute({'protoname' : self._protocol.get_name()})
         self.add(MessageSerializers(self._protocol))
         self.add(MessageDeserializers(self._protocol))
         return code
