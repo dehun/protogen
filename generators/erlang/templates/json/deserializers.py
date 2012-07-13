@@ -116,7 +116,7 @@ class TMessageFieldDeserializer(Template):
         self._valueName = valueName
 
     def body(self):
-        self.add(TSimple(StringTemplate("inner_deserialize_message($valueName)").substitute({'valueName' : self._valueName}), indent=1))
+        self.add(TSimple(StringTemplate(" inner_deserialize_message(element(2, $valueName))").substitute({'valueName' : self._valueName}), indent=1))
 
 class TListFieldDeserializer(Template):
     def __init__(self, field, valueName):
