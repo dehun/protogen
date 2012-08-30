@@ -19,7 +19,7 @@ class MessageSerializers(Template):
         # helper functions
         self.add(TSimple("""
 serialize_int(Val) -> lists:concat(['"', Val, '"']).
-serialize_float(Val) -> lists:concat(['"', Val, '"']).
+serialize_float(Val) -> lists:concat(['"', lists:flatten(io_lib:format("~p",[Val])), '"']).
 serialize_string(Val) ->lists:concat(['"', Val, '"']).
 serialize_list(Fun, Value) -> lists:concat(["[", string:join(lists:map(Fun, Value), ","), "]"]).
         """))
